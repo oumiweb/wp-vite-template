@@ -1,0 +1,40 @@
+@use "../global" as *;
+
+.c-triangle {
+  display: inline-block;
+  width: calc(64 * var(--to-rem));
+  aspect-ratio: 1/1;
+  background-color: var(--color-black);
+}
+
+.c-triangle[data-direction="top"] {
+  clip-path: var(--clip-triangle-top);
+}
+
+.c-triangle[data-direction="bottom"] {
+  clip-path: var(--clip-triangle-bottom);
+}
+
+.c-triangle[data-direction="left"] {
+  clip-path: var(--clip-triangle-left);
+}
+
+.c-triangle[data-direction="right"] {
+  clip-path: var(--clip-triangle-right);
+}
+
+.c-triangle[data-direction="lower-left"] {
+  clip-path: var(--clip-triangle-lower-left);
+}
+
+.c-triangle[data-direction="upper-left"] {
+  clip-path: var(--clip-triangle-upper-left);
+}
+
+.c-triangle[data-direction="lower-right"] {
+  clip-path: var(--clip-triangle-lower-right);
+}
+
+.c-triangle[data-direction="upper-right"] {
+  clip-path: var(--clip-triangle-upper-right);
+}

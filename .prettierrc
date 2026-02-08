@@ -1,0 +1,15 @@
+{
+  "endOfLine": "lf",
+  "semi": true,
+  "tabWidth": 2,
+  "useTabs": false,
+  "trailingComma": "all",
+  "bracketSpacing": true,
+  "arrowParens": "avoid",
+  "printWidth": 250,
+  "htmlWhitespaceSensitivity": "css",
+  "proseWrap": "preserve",
+  "plugins": ["@prettier/plugin-php"],
+  "phpVersion": "8.1",
+  "singleQuote": false
+}

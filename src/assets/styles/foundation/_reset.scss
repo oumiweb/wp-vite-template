@@ -1,0 +1,11 @@
+// 基本のリセットCSSはkiso.cssで行う
+
+// hタグのmarginを0にする
+:where(h1, h2, h3, h4, h5, h6) {
+  margin: 0;
+}
+
+// pタグのmarginを0にする
+:where(p) {
+  margin: 0;
+}

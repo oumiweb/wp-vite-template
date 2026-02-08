@@ -1,0 +1,159 @@
+@use "../global" as *;
+
+.p-works-list {
+  padding-block: calc(48 * var(--to-rem)) calc(32 * var(--to-rem));
+
+  @include mq(md) {
+    padding-block: calc(40 * var(--to-rem)) calc(60 * var(--to-rem));
+  }
+}
+
+// カテゴリフィルター
+.p-works-list__filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(8 * var(--to-rem));
+  margin-block-start: calc(32 * var(--to-rem));
+
+  @include mq(md) {
+    gap: calc(12 * var(--to-rem));
+  }
+}
+
+.p-works-list__filter-btn {
+  padding: calc(10 * var(--to-rem)) calc(20 * var(--to-rem));
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: transparent;
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: calc(14 * var(--to-rem));
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+
+  @include mq(md) {
+    padding: calc(10 * var(--to-rem)) calc(24 * var(--to-rem));
+    font-size: calc(15 * var(--to-rem));
+  }
+
+  @media (any-hover: hover) {
+    &:hover:not(.is-active) {
+      border-color: var(--color-border);
+      background-color: var(--color-gray);
+    }
+  }
+
+  // アクティブ状態
+  &.is-active {
+    border-color: var(--color-accent);
+    background-color: var(--color-accent);
+    color: var(--color-white);
+  }
+}
+
+// カードグリッド
+.p-works-list__grid {
+  --_card-widht: calc(320 * var(--to-rem));
+
+  display: grid;
+  gap: calc(24 * var(--to-rem));
+  margin-block-start: calc(24 * var(--to-rem));
+
+  @include mq(md) {
+    grid-template-columns: repeat(auto-fill, minmax(min(var(--_card-widht), 100%), 1fr));
+    gap: calc(32 * var(--to-rem));
+    margin-block-start: calc(32 * var(--to-rem));
+  }
+}
+
+// カード
+.p-works-list__card {
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
+
+  @media (any-hover: hover) {
+    &:hover .p-works-list__thumbnail img {
+      scale: 1.05;
+    }
+  }
+}
+
+.p-works-list__link {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+}
+
+// サムネイル
+.p-works-list__thumbnail {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+
+  img {
+    transition: scale 0.4s ease;
+  }
+}
+
+// カテゴリバッジ
+.p-works-list__badge {
+  position: absolute;
+  top: calc(12 * var(--to-rem));
+  left: calc(12 * var(--to-rem));
+  padding: calc(6 * var(--to-rem)) calc(12 * var(--to-rem));
+  border-radius: 4px;
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  font-size: calc(12 * var(--to-rem));
+  font-weight: var(--fw-medium);
+}
+
+// コンテンツ
+.p-works-list__content {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  gap: calc(8 * var(--to-rem));
+  padding: calc(20 * var(--to-rem));
+}
+
+.p-works-list__card-title {
+  color: var(--color-text);
+  font-size: calc(16 * var(--to-rem));
+  font-weight: var(--fw-bold);
+  line-height: 1.5;
+
+  @include mq(md) {
+    font-size: calc(18 * var(--to-rem));
+  }
+}
+
+.p-works-list__client {
+  color: oklch(from var(--color-text) l c h / 70%);
+  font-size: calc(12 * var(--to-rem));
+
+  @include mq(md) {
+    font-size: calc(13 * var(--to-rem));
+  }
+}
+
+.p-works-list__date {
+  color: oklch(from var(--color-text) l c h / 70%);
+  font-size: calc(12 * var(--to-rem));
+}
+
+// 空メッセージ
+.p-works-list__empty {
+  padding-block: calc(60 * var(--to-rem));
+  color: oklch(from var(--color-text) l c h / 70%);
+  font-size: calc(16 * var(--to-rem));
+  text-align: center;
+
+  @include mq(md) {
+    padding-block: calc(80 * var(--to-rem));
+    font-size: calc(18 * var(--to-rem));
+  }
+}

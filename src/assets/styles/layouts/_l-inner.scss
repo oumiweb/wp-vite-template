@@ -1,0 +1,11 @@
+@use "../global" as *;
+
+.l-inner {
+  max-width: calc(var(--inner-sp) + var(--padding-inner) * 2);
+  margin-inline: auto;
+  padding-inline: var(--padding-inner);
+
+  @include mq("md") {
+    max-width: calc(var(--inner) + var(--padding-inner) * 2);
+  }
+}

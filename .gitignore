@@ -1,0 +1,170 @@
+# ============================================
+# Dependencies
+# ============================================
+node_modules/
+.pnp
+.pnp.js
+.yarn/
+.yarnrc.yml
+
+# Lock files (yarn.lockは管理対象、npm/pnpmのlockファイルは無視)
+# yarn.lock は Git で管理します（yarnプロジェクトでは必須）
+package-lock.json
+pnpm-lock.yaml
+
+# ============================================
+# Build outputs
+# ============================================
+dist/
+dist-ssr/
+build/
+*.local
+
+# ============================================
+# Logs
+# ============================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ============================================
+# OS files
+# ============================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+desktop.ini
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+.directory
+.Trash-*
+.nfs*
+
+# ============================================
+# Editor / IDE
+# ============================================
+# VSCode
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# IntelliJ IDEA / PhpStorm / WebStorm
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# ============================================
+# Environment variables
+# ============================================
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ============================================
+# Testing / Coverage
+# ============================================
+coverage/
+*.lcov
+.nyc_output/
+*.test.js.snap
+
+# ============================================
+# Temporary files
+# ============================================
+*.tmp
+*.temp
+*.bak
+*.swp
+*.cache
+.cache/
+.temp/
+tmp/
+
+# ============================================
+# WordPress
+# ============================================
+# Plugins (managed by wp-env)
+wordpress/plugins/*
+
+# Uploads (keep structure, ignore content)
+wordpress/uploads/*
+!wordpress/uploads/.gitkeep
+!wordpress/uploads/.htaccess
+!wordpress/uploads/wpcf7_uploads/
+wordpress/uploads/tmp-create-post.*
+# DB エクスポート（チーム管理用にコミット可能）
+!wordpress/uploads/*.sql
+
+# WordPress debug log
+debug.log
+
+# ============================================
+# Vite / Build tools
+# ============================================
+# Vite開発マニフェスト（自動生成されるため）
+wordpress/themes/*/manifest.dev.json
+wordpress/themes/*/.vite/
+
+# ============================================
+# Misc
+# ============================================
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# 仕様書（ローカル専用）
+spec/

@@ -1,0 +1,7 @@
+@use "../global" as *;
+
+.l-header {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-index-header);
+}

@@ -1,0 +1,13 @@
+[data-only-device="md"] {
+  // 767px以下では非表示
+  @media (width <= 767px) {
+    display: none;
+  }
+}
+
+[data-only-device="sm"] {
+  // 768px以上では非表示
+  @media (width >= 768px) {
+    display: none;
+  }
+}

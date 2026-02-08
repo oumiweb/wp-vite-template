@@ -1,0 +1,92 @@
+@use "../global" as *;
+
+.p-dev-notice {
+  padding-block: calc(24 * var(--to-rem));
+  background-color: #fff3cd;
+
+  @include mq(md) {
+    padding-block: calc(32 * var(--to-rem));
+  }
+}
+
+.p-dev-notice__inner {
+  max-width: calc(var(--inner) + var(--padding-inner) * 2);
+}
+
+.p-dev-notice__content {
+  display: flex;
+  flex-direction: column;
+  gap: calc(16 * var(--to-rem));
+  color: var(--color-text);
+  font-size: calc(14 * var(--to-rem));
+  line-height: 1.8;
+
+  @include mq(md) {
+    gap: calc(20 * var(--to-rem));
+    font-size: calc(16 * var(--to-rem));
+  }
+}
+
+.p-dev-notice__title {
+  color: var(--color-text);
+  font-size: calc(18 * var(--to-rem));
+  font-weight: var(--fw-bold);
+  line-height: 1.6;
+
+  @include mq(md) {
+    font-size: calc(20 * var(--to-rem));
+  }
+}
+
+.p-dev-notice__text code {
+  padding-block: calc(2 * var(--to-rem));
+  padding-inline: calc(6 * var(--to-rem));
+  border-radius: 4px;
+  background-color: rgb(0 0 0 / 5%);
+  color: var(--color-primary);
+  font-family: "Courier New", Courier, monospace;
+  font-size: calc(13 * var(--to-rem));
+
+  @include mq(md) {
+    font-size: calc(14 * var(--to-rem));
+  }
+}
+
+.p-dev-notice__list {
+  display: flex;
+  flex-direction: column;
+  gap: calc(12 * var(--to-rem));
+  margin: 0;
+  padding-inline-start: calc(24 * var(--to-rem));
+
+  @include mq(md) {
+    gap: calc(16 * var(--to-rem));
+    padding-inline-start: calc(32 * var(--to-rem));
+  }
+}
+
+.p-dev-notice__item {
+  display: flex;
+  flex-direction: column;
+  gap: calc(4 * var(--to-rem));
+  line-height: 1.8;
+}
+
+.p-dev-notice__item strong {
+  color: var(--color-primary);
+  font-weight: var(--fw-bold);
+}
+
+.p-dev-notice__item code {
+  padding-block: calc(2 * var(--to-rem));
+  padding-inline: calc(6 * var(--to-rem));
+  border-radius: 4px;
+  background-color: rgb(0 0 0 / 5%);
+  color: var(--color-primary);
+  font-family: "Courier New", Courier, monospace;
+  font-size: calc(13 * var(--to-rem));
+
+  @include mq(md) {
+    font-size: calc(14 * var(--to-rem));
+  }
+}

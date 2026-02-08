@@ -1,0 +1,70 @@
+@use "../global" as *;
+
+.p-footer {
+  padding: calc(40 * var(--to-rem)) 0;
+  background-color: var(--color-primary);
+
+  @include mq(md) {
+    padding: calc(60 * var(--to-rem)) 0;
+  }
+}
+
+.p-footer__content {
+  display: flex;
+  flex-direction: column;
+  gap: calc(20 * var(--to-rem));
+  align-items: center;
+
+  @include mq(md) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+}
+
+.p-footer__logo {
+  width: 100%;
+  max-width: calc(40 * var(--to-rem));
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.p-footer__nav-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(15 * var(--to-rem)) calc(30 * var(--to-rem));
+  justify-content: center;
+
+  @include mq(md) {
+    justify-content: flex-end;
+  }
+}
+
+.p-footer__nav-item a {
+  color: var(--color-white);
+  text-decoration: none;
+  transition: opacity 0.3s;
+}
+
+@media (any-hover: hover) {
+  .p-footer__nav-item a:hover {
+    opacity: 0.7;
+  }
+}
+
+.p-footer__bottom {
+  margin-block-start: calc(30 * var(--to-rem));
+  text-align: center;
+
+  @include mq(md) {
+    margin-block-start: calc(40 * var(--to-rem));
+  }
+}
+
+.p-footer__copyright {
+  color: var(--color-white);
+  font-size: calc(14 * var(--to-rem));
+}

@@ -1,0 +1,15 @@
+@use "foundation";
+@use "global";
+
+// layoutディレクトリ内のファイルを直接インポート
+@use "layouts/**";
+
+// components と projects
+@use "components/**";
+@use "projects/**";
+
+// utilityクラス（全てのファイル）をワイルドカードで読み込み
+@use "utilities/**";
+
+// リセット（node_modules の kiso.css）
+@import "kiso.css";

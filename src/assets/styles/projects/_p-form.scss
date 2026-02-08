@@ -1,0 +1,323 @@
+@use "../global" as *;
+
+.p-form {
+  // ローカルカスタムプロパティ（色管理）
+  --_form-color-text: var(--color-text);
+  --_form-color-bg: var(--color-white);
+  --_form-color-badge-text: var(--color-white);
+  --_form-color-badge-bg: var(--color-orange);
+  --_form-color-accent: var(--color-accent);
+  --_form-color-border: var(--color-border);
+  --_form-color-primary: var(--color-primary);
+
+  max-width: calc(800 * var(--to-rem));
+  margin-inline: auto;
+
+  > * {
+    margin-block-start: calc(40 * var(--to-rem));
+  }
+
+  // 最後から2つ目の要素(プラポリ)に対してだけ
+  // margin-topを20pxにする
+  > *:nth-last-child(2) {
+    margin-block-start: calc(20 * var(--to-rem));
+  }
+
+  @include mq(md) {
+    > * {
+      margin-block-start: calc(48 * var(--to-rem));
+    }
+
+    > *:nth-last-child(2) {
+      margin-block-start: calc(24 * var(--to-rem));
+    }
+  }
+}
+
+.p-form__item {
+  display: grid;
+  gap: calc(8 * var(--to-rem));
+}
+
+.p-form__label {
+  display: block;
+  color: var(--_form-color-text);
+  font-size: calc(16 * var(--to-rem));
+  font-weight: var(--fw-bold);
+}
+
+.p-form__label--required {
+  position: relative;
+  padding-inline-end: calc(50 * var(--to-rem));
+}
+
+.p-form__label--required::after {
+  content: "必須";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  padding-block: calc(8 * var(--to-rem));
+  padding-inline: calc(16 * var(--to-rem));
+  border-radius: 4px;
+  background-color: var(--_form-color-badge-bg);
+  color: var(--_form-color-badge-text);
+  font-size: calc(12 * var(--to-rem));
+  font-weight: var(--fw-medium);
+  line-height: 1;
+  translate: 0 -50%;
+}
+
+.p-form__input,
+.p-form__select,
+.p-form__textarea {
+  width: 100%;
+  padding: calc(14 * var(--to-rem)) calc(16 * var(--to-rem));
+  border: 1px solid var(--_form-color-border);
+  border-radius: 8px;
+  background-color: var(--_form-color-bg);
+  color: var(--_form-color-text);
+  font-size: calc(16 * var(--to-rem));
+  line-height: 1.5;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.p-form__input::placeholder,
+.p-form__select::placeholder,
+.p-form__textarea::placeholder {
+  color: oklch(from var(--_form-color-text) l c h / 50%);
+}
+
+.p-form__input:focus,
+.p-form__select:focus,
+.p-form__textarea:focus {
+  border-color: var(--_form-color-accent);
+  box-shadow: 0 0 0 3px oklch(from var(--_form-color-accent) l c h / 10%);
+  outline: none;
+}
+
+.p-form__input:hover:not(:focus),
+.p-form__select:hover:not(:focus),
+.p-form__textarea:hover:not(:focus) {
+  border-color: var(--_form-color-accent);
+  opacity: 0.7;
+}
+
+.p-form__input.is-error,
+.p-form__select.is-error,
+.p-form__textarea.is-error {
+  border-color: var(--_form-color-badge-bg);
+}
+
+@include mq(md) {
+  .p-form__input,
+  .p-form__select,
+  .p-form__textarea {
+    padding: calc(16 * var(--to-rem)) calc(20 * var(--to-rem));
+  }
+}
+
+.p-form__select {
+  position: relative;
+  padding-inline-end: calc(48 * var(--to-rem));
+  cursor: pointer;
+  appearance: none;
+}
+
+.p-form__select-wrap {
+  position: relative;
+}
+
+.p-form__select-wrap::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: calc(16 * var(--to-rem));
+  clip-path: var(--clip-triangle-bottom);
+  width: calc(12 * var(--to-rem));
+  height: calc(8 * var(--to-rem));
+  border: none;
+  background-color: var(--_form-color-primary);
+  pointer-events: none;
+  translate: 0 -50%;
+}
+
+.p-form__textarea {
+  min-height: calc(160 * var(--to-rem));
+}
+
+.p-form__radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 * var(--to-rem));
+
+  @include mq(md) {
+    flex-flow: row wrap;
+    gap: calc(32 * var(--to-rem)) calc(40 * var(--to-rem));
+  }
+}
+
+.p-form__radio {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: calc(8 * var(--to-rem));
+  align-items: center;
+  cursor: pointer;
+}
+
+.p-form__radio input[type="radio"] {
+  position: relative;
+  width: calc(20 * var(--to-rem));
+  height: calc(20 * var(--to-rem));
+  margin: 0;
+  margin-inline-end: calc(16 * var(--to-rem));
+  border: 2px solid var(--_form-color-border);
+  border-radius: 50%;
+  cursor: pointer;
+  appearance: none;
+  transition: border-color 0.2s ease;
+}
+
+.p-form__radio input[type="radio"]:checked {
+  border-color: var(--_form-color-accent);
+  background-color: var(--_form-color-accent);
+}
+
+.p-form__radio input[type="radio"]:checked::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(8 * var(--to-rem));
+  height: calc(8 * var(--to-rem));
+  border-radius: 50%;
+  background-color: var(--_form-color-bg);
+  translate: -50% -50%;
+}
+
+.p-form__radio input[type="radio"]:hover:not(:checked) {
+  border-color: var(--_form-color-accent);
+  opacity: 0.5;
+}
+
+.p-form__radio input[type="radio"]:focus {
+  box-shadow: 0 0 0 3px oklch(from var(--_form-color-accent) l c h / 10%);
+  outline: none;
+}
+
+.p-form__radio-text {
+  color: var(--_form-color-text);
+  font-size: calc(16 * var(--to-rem));
+  user-select: none;
+}
+
+.p-form__checkbox {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.p-form__checkbox input[type="checkbox"] {
+  position: relative;
+  width: calc(20 * var(--to-rem));
+  height: calc(20 * var(--to-rem));
+  margin: 0;
+  margin-inline-end: calc(8 * var(--to-rem));
+  border: 2px solid var(--_form-color-border);
+  border-radius: 4px;
+  cursor: pointer;
+  appearance: none;
+  transition: border-color 0.2s ease;
+}
+
+.p-form__checkbox input[type="checkbox"]:checked {
+  border-color: var(--_form-color-accent);
+  background-color: var(--_form-color-accent);
+}
+
+.p-form__checkbox input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  top: calc(2 * var(--to-rem));
+  left: calc(5 * var(--to-rem));
+  width: calc(6 * var(--to-rem));
+  height: calc(10 * var(--to-rem));
+  border: 2px solid var(--_form-color-bg);
+  border-top: none;
+  border-left: none;
+  rotate: 45deg;
+}
+
+.p-form__checkbox input[type="checkbox"]:hover:not(:checked) {
+  border-color: var(--_form-color-accent);
+  opacity: 0.5;
+}
+
+.p-form__checkbox input[type="checkbox"]:focus {
+  box-shadow: 0 0 0 3px oklch(from var(--_form-color-accent) l c h / 10%);
+  outline: none;
+}
+
+.p-form__checkbox-text {
+  color: var(--_form-color-text);
+  font-size: calc(16 * var(--to-rem));
+  user-select: none;
+}
+
+.p-form__link {
+  color: var(--_form-color-accent);
+  text-decoration: underline;
+  transition: opacity 0.2s ease;
+
+  @media (any-hover: hover) {
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+.p-form__button-wrap {
+  text-align: center;
+}
+
+.p-form__error {
+  display: block;
+  color: var(--_form-color-badge-bg);
+  font-size: calc(14 * var(--to-rem));
+}
+
+.p-form__success {
+  padding: calc(24 * var(--to-rem));
+  border: 1px solid var(--_form-color-accent);
+  border-radius: 8px;
+  background-color: rgb(64 143 149 / 10%);
+  color: var(--_form-color-accent);
+  font-size: calc(16 * var(--to-rem));
+  text-align: center;
+}
+
+// Contact Form 7用
+.p-form__radio .wpcf7-list-item-label,
+.p-form__radio .wpcf7-li label {
+  color: var(--_form-color-text);
+  font-size: calc(16 * var(--to-rem));
+  line-height: 1.5;
+  user-select: none;
+}
+
+.p-form__checkbox .wpcf7-form-control-wrap,
+.p-form__checkbox .wpcf7-form-control {
+  display: flex;
+  align-items: center;
+}
+
+.p-form__radio .wpcf7-list-item label {
+  display: flex;
+  align-items: center;
+}
+
+.p-form__item .wpcf7-list-item {
+  display: flex;
+  align-items: center;
+}

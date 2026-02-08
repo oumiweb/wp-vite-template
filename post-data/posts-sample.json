@@ -1,0 +1,21 @@
+[
+  {
+    "title": "サンプル投稿1",
+    "content": "これはサンプル投稿1の本文です。\n\n複数行のテキストも対応しています。",
+    "status": "publish",
+    "categories": [1],
+    "tags": "サンプル,テスト"
+  },
+  {
+    "title": "サンプル投稿2",
+    "content": "これはサンプル投稿2の本文です。",
+    "status": "draft",
+    "categories": [1, 2],
+    "tags": "サンプル"
+  },
+  {
+    "title": "サンプル投稿3",
+    "content": "カテゴリやタグを指定しない投稿の例です。",
+    "status": "publish"
+  }
+]
