@@ -16,7 +16,7 @@
   "scripts": {
     "dev": "concurrently \"yarn watch:scss\" \"vite\"",
     "watch:scss": "node bin/watch-scss-globs.js",
-    "build:wp": "vite build --mode wp",
+    "build:wp": "vite build --mode wp && node bin/clean-dev-files.js",
     "wp-start": "node bin/update-wp-config.js --wp-env && wp-env start",
     "wp-stop": "wp-env stop",
     "wp-init": "node bin/init-wp-options.js",

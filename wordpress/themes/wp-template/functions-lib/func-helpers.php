@@ -7,8 +7,7 @@
  */
 
 /**
- * Vite manifestファイルを読み込む（開発環境用のみ）
- * 本番環境では使用せず、固定ファイル名 + filemtime()でバージョン管理
+ * Vite manifestファイルを読み込む（開発環境用）
  *
  * @return array|false manifest配列（開発環境のみ）、失敗時はfalse
  */
@@ -20,11 +19,45 @@ function get_vite_manifest()
     return $manifest;
   }
 
-  // 開発環境用のmanifest（manifest.dev.json）のみ確認
-  // 本番環境では固定ファイル名 + filemtime()でバージョン管理するため、manifest.jsonは使用しない
   $devManifestPath = get_template_directory() . "/manifest.dev.json";
   if (file_exists($devManifestPath)) {
     $manifest_content = file_get_contents($devManifestPath);
+    if ($manifest_content !== false) {
+      $manifest = json_decode($manifest_content, true);
+      if (json_last_error() === JSON_ERROR_NONE && $manifest !== null) {
+        if (isset($manifest["url"])) {
+          $url = $manifest["url"];
+          $parsed_url = parse_url($url);
+          $host = isset($parsed_url["host"]) ? strtolower($parsed_url["host"]) : "";
+
+          if ($host === "localhost" || $host === "127.0.0.1" || $host === "") {
+            return $manifest;
+          }
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+/**
+ * ビルド済みmanifest.jsonを読み込む（本番環境用）
+ *
+ * @return array|false manifest配列（本番環境のみ）、失敗時はfalse
+ */
+function get_build_manifest()
+{
+  static $manifest = null;
+
+  if ($manifest !== null) {
+    return $manifest;
+  }
+
+  // ビルド済みmanifest.jsonを読み込み
+  $manifestPath = get_template_directory() . "/.vite/manifest.json";
+  if (file_exists($manifestPath)) {
+    $manifest_content = file_get_contents($manifestPath);
     if ($manifest_content !== false) {
       $manifest = json_decode($manifest_content, true);
       if (json_last_error() === JSON_ERROR_NONE && $manifest !== null) {

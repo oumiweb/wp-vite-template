@@ -2,84 +2,107 @@
 
 /**
  * Vite対応のスクリプトとスタイル読み込み処理
- *
- * キャッシュ自動クリア方式:
- * - 開発環境: Vite開発サーバーから読み込み（HMR対応）
- * - 本番環境: 固定ファイル名 + filemtime()でバージョン管理（クエリパラメータ方式）
- *
- * 参考: https://ulcoder.com/auto-re-cache/
  */
 function add_vite_scripts()
 {
   // jQuery は deregister しない（WordPress 6.9 以降、current-template-js 等が jquery に依存しており、
   // 未登録の依存で Notice が出るため。テーマの script は jquery を deps に含めないので、必要な時だけ読み込まれる）
 
-  // 開発環境判定（manifest.dev.jsonの存在確認）
-  $manifest = get_vite_manifest();
+  $dev_manifest = get_vite_manifest();
 
-  if ($manifest !== false && isset($manifest["url"])) {
+  if ($dev_manifest !== false && isset($dev_manifest["url"])) {
     // ============================================
     // 開発環境（Vite開発サーバーから読み込み）
     // ============================================
-    $baseUrl = $manifest["url"];
+    $baseUrl = $dev_manifest["url"];
 
     // Vite Client（HMR対応）
     wp_enqueue_script("vite-client", $baseUrl . "@vite/client", [], null, true);
 
     // メインJS (script.js -> key: script)
     // vite.config.jsのinputsForWordPress設定に基づく
-    if (isset($manifest["inputs"]["script"])) {
-      wp_enqueue_script("theme-scripts", $baseUrl . $manifest["inputs"]["script"], [], null, true);
+    if (isset($dev_manifest["inputs"]["script"])) {
+      wp_enqueue_script("theme-scripts", $baseUrl . $dev_manifest["inputs"]["script"], [], null, true);
     }
 
     // CSSはJS内でimportされている場合、Viteが自動的に注入するため明示的な読み込みは不要
   } else {
     // ============================================
     // 本番環境（ビルド済みファイルから読み込み）
-    // 固定ファイル名 + filemtime()でバージョン管理
+    // manifest.jsonを使用してハッシュ付きファイル名でキャッシュバスティング
     // ============================================
     $root = get_template_directory_uri();
-    $assets_dir = get_template_directory() . "/assets";
+    $build_manifest = get_build_manifest();
 
-    // ビルドで生成されたCSSファイルを取得
-    $css_files = glob($assets_dir . "/styles/*.css");
+    if ($build_manifest !== false) {
+      // manifest.jsonを使用する方式（推奨）
+      // ハッシュ付きファイル名で確実なキャッシュバスティング
 
-    // 1. ライブラリ系CSS（style.css 以外）を先に読み込む
-    if (is_array($css_files)) {
-      foreach ($css_files as $css_file) {
-        if (!is_file($css_file) || !is_readable($css_file)) {
-          continue;
+      // 1. メインCSS（style.scss）を読み込み
+      $style_entry = $build_manifest["assets/styles/style.scss"] ?? null;
+      if ($style_entry && isset($style_entry["file"])) {
+        $style_path = $root . "/" . $style_entry["file"];
+        // manifest.jsonのファイル名にハッシュが含まれているため、バージョンは不要
+        wp_enqueue_style("theme-styles", $style_path, [], null, false);
+      }
+
+      // 2. メインJS（script.js）を読み込み
+      $script_entry = $build_manifest["assets/js/script.js"] ?? null;
+      if ($script_entry && isset($script_entry["file"])) {
+        $script_path = $root . "/" . $script_entry["file"];
+        // JSファイルに関連するCSSがあれば読み込み
+        if (isset($script_entry["css"]) && is_array($script_entry["css"])) {
+          foreach ($script_entry["css"] as $css_file) {
+            wp_enqueue_style("theme-script-css", $root . "/" . $css_file, [], null, false);
+          }
         }
+        wp_enqueue_script("theme-scripts", $script_path, [], null, true);
+      }
+    } else {
+      // manifest.jsonが存在しない場合のフォールバック
+      // 固定ファイル名 + filemtime()でバージョン管理
+      $assets_dir = get_template_directory() . "/assets";
 
-        $filename = basename($css_file, ".css");
+      // ビルドで生成されたCSSファイルを取得
+      $css_files = glob($assets_dir . "/styles/*.css");
 
-        // style.css は後でまとめて読み込む
-        if ($filename === "style") {
-          continue;
-        }
+      // 1. ライブラリ系CSS（style.css 以外）を先に読み込む
+      if (is_array($css_files)) {
+        foreach ($css_files as $css_file) {
+          if (!is_file($css_file) || !is_readable($css_file)) {
+            continue;
+          }
 
-        $css_path = $root . "/assets/styles/" . basename($css_file);
-        $version = get_file_version($css_file);
-        if ($version !== null) {
-          wp_enqueue_style("theme-" . $filename, $css_path, [], $version, false);
+          $filename = basename($css_file, ".css");
+
+          // style.css は後でまとめて読み込む
+          if ($filename === "style") {
+            continue;
+          }
+
+          $css_path = $root . "/assets/styles/" . basename($css_file);
+          $version = get_file_version($css_file);
+          if ($version !== null) {
+            wp_enqueue_style("theme-" . $filename, $css_path, [], $version, false);
+          }
         }
       }
-    }
 
-    // 2. メインCSS（style.css）は最後に読み込み、テーマ側のスタイルを優先させる
-    $style_path = $root . "/assets/styles/style.css";
-    $style_file = $assets_dir . "/styles/style.css";
-    $version = get_file_version($style_file);
-    if ($version !== null) {
-      wp_enqueue_style("theme-styles", $style_path, [], $version, false);
-    }
+      // 2. メインCSS（style.css）は最後に読み込み、テーマ側のスタイルを優先させる
+      $style_path = $root . "/assets/styles/style.css";
+      $style_file = $assets_dir . "/styles/style.css";
+      $version = get_file_version($style_file);
+      if ($version !== null) {
+        wp_enqueue_style("theme-styles", $style_path, [], $version, false);
+      }
 
-    // メインJS（ファイル更新日時をバージョンとして使用）
-    $script_path = $root . "/assets/js/script.js";
-    $script_file = $assets_dir . "/js/script.js";
-    $version = get_file_version($script_file);
-    if ($version !== null) {
-      wp_enqueue_script("theme-scripts", $script_path, [], $version, true);
+      // メインJS（ファイル更新日時をバージョンとして使用）
+      $script_path = $root . "/assets/js/script.js";
+      $script_file = $assets_dir . "/js/script.js";
+      $version = get_file_version($script_file);
+      if ($version !== null) {
+        wp_enqueue_script("theme-scripts", $script_path, [], $version, true);
+      }
     }
   }
 
@@ -106,7 +129,7 @@ function disable_global_styles()
 add_action("wp_enqueue_scripts", "disable_global_styles", 100);
 
 /**
- * after_setup_themeでglobal-stylesを無効化（より確実な方法）
+ * after_setup_themeでglobal-stylesを無効化
  */
 function disable_global_styles_on_setup()
 {

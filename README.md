@@ -10,6 +10,7 @@ Vite + FLOCSS + WordPress を使用したモダンなWordPressテーマ開発環
 - [必要環境](#必要環境)
 - [WordPress開発の流れ](#wordpress開発の流れ)
 - [開発コマンド一覧](#開発コマンド一覧)
+- [本番環境へのデプロイ](#本番環境へのデプロイ)
 - [ガイドライン・ドキュメント](#ガイドラインドキュメント)
 - [よくある問題と解決方法](#よくある問題と解決方法)
 - [ライセンス](#ライセンス)
@@ -220,14 +221,92 @@ OGP・favicon は管理画面（外観→カスタマイズ / SEO Simple Pack）
 ## ビルドとWordPress
 
 - **WordPress用ビルド**: `yarn build:wp` → `wordpress/themes/{THEME_NAME}/assets/` に出力（`{THEME_NAME}` はプロジェクトルート名）
-- **開発時**（`WP_DEBUG=true`）: Vite（`localhost:5173`）から資産を読み込み
-- **本番時**: 上記ビルド済み資産を読み込み。納品時はデバッグ用記述の削除を推奨
+- **開発時**: Vite（`localhost:5173`）から資産を読み込み（HMR対応）
+- **本番時**: ビルド済み資産を読み込み（ハッシュ付きファイル名でキャッシュバスティング）
 
 **管理画面**: `http://localhost:8888/wp-admin/`（ID: `admin` / パス: `password`）
 
 **言語設定**: `.wp-env.json` の `WPLANG: "ja"` 設定により、`yarn wp-start` 時に自動的に日本語版WordPressがインストールされ、言語設定も日本語になります。
 
 **コンテンツ同期**: `yarn wp-contents:export` / `yarn wp-contents:import`（単一バックアップ。PRで変更内容を記載推奨）
+
+---
+
+## 本番環境へのデプロイ
+
+### 環境判定の仕組み
+
+本テンプレートは、以下の2段階チェックで開発環境と本番環境を自動判定します：
+
+1. **manifest.dev.jsonの存在チェック**
+2. **URLチェック**（localhost/127.0.0.1のみ開発環境として扱う）
+
+**判定結果**:
+- `manifest.dev.json`が存在 かつ URLが`localhost` → 開発環境（Vite開発サーバーから読み込み）
+- それ以外 → 本番環境（ビルド済みファイルから読み込み）
+
+### デプロイ前の準備
+
+```bash
+# 1. ビルド実行（自動的にmanifest.dev.jsonが削除される）
+yarn build:wp
+
+# 2. 確認: ビルド済みファイルが生成されているか
+ls wordpress/themes/{THEME_NAME}/assets/js/script.*.js
+ls wordpress/themes/{THEME_NAME}/assets/styles/style.*.css
+# → ハッシュ付きファイル名が存在することを確認
+
+# 3. 確認: manifest.dev.jsonが削除されているか
+ls wordpress/themes/{THEME_NAME}/manifest.dev.json
+# → 存在しないことを確認（存在する場合は手動で削除）
+```
+
+### デプロイ方法
+
+#### 1. WPvividでのアップロード
+
+```bash
+# 1. ビルド実行
+yarn build:wp
+
+# 2. WPvividでテーマをアップロード
+```
+
+#### 2. FTPでの直接アップロード
+
+```bash
+# 1. ビルド実行
+yarn build:wp
+
+# 2. FTPでテーマディレクトリをアップロード
+# wordpress/themes/{THEME_NAME}/ をアップロード
+```
+
+※DBは別途アップロードが必要です
+
+### デプロイ後の確認事項
+
+1. **アセットが正しく読み込まれているか確認**
+   - ブラウザの開発者ツールで、CSS/JSファイルが正しく読み込まれているか確認
+   - ファイル名にハッシュが含まれていることを確認（例: `script.a1b2c3.js`）
+
+2. **キャッシュがクリアされているか確認**
+   - ブラウザのキャッシュをクリアして再読み込み
+   - ファイル名が変更されているため、自動的にキャッシュがクリアされる
+
+3. **エラーがないか確認**
+   - ブラウザのコンソールでエラーがないか確認
+   - WordPressのデバッグログを確認（`WP_DEBUG`が有効な場合）
+
+### セキュリティ対策
+
+本テンプレートは以下のセキュリティ対策を実装しています：
+
+- **`.gitignore`で除外**: `manifest.dev.json`と`.vite/`をGit管理外に
+- **ビルド時の自動クリーンアップ**: `yarn build:wp`実行時に`manifest.dev.json`が自動削除される
+- **URLチェック**: localhost/127.0.0.1のみ開発環境として扱う（FTP誤アップロード対策）
+
+これにより、どのデプロイ方法でも安全に運用できます。
 
 ---
 

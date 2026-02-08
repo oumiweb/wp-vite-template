@@ -19,17 +19,24 @@ function my_setup()
   // ブロックエディタのスタイルサポート
   add_theme_support("editor-styles");
 
-  // エディタスタイルの読み込み
-  // 開発環境ではViteサーバーから、本番環境では固定ファイル名 + filemtime()でバージョン管理
-  $manifest = get_vite_manifest();
-  if ($manifest !== false && isset($manifest["url"])) {
+  $build_manifest = get_build_manifest();
+  $dev_manifest = get_vite_manifest();
+
+  if ($dev_manifest !== false && isset($dev_manifest["url"])) {
     // 開発環境: Viteサーバーから読み込み（HMR対応）
-    $baseUrl = $manifest["url"];
-    if (isset($manifest["inputs"]["style"])) {
-      add_editor_style($baseUrl . $manifest["inputs"]["style"]);
+    $baseUrl = $dev_manifest["url"];
+    if (isset($dev_manifest["inputs"]["style"])) {
+      add_editor_style($baseUrl . $dev_manifest["inputs"]["style"]);
+    }
+  } elseif ($build_manifest !== false) {
+    // 本番環境: manifest.jsonからビルド済みCSSを読み込み
+    $style_entry = $build_manifest["assets/styles/style.scss"] ?? null;
+    if ($style_entry && isset($style_entry["file"])) {
+      $style_path = get_template_directory_uri() . "/" . $style_entry["file"];
+      add_editor_style($style_path);
     }
   } else {
-    // 本番環境: ビルド済みCSSから読み込み（ファイル更新日時をバージョンとして使用）
+    // フォールバック: 固定ファイル名 + filemtime()でバージョン管理
     $style_path = get_template_directory_uri() . "/assets/styles/style.css";
     $style_file = get_template_directory() . "/assets/styles/style.css";
     $version = get_file_version($style_file);
